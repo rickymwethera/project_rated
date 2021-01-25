@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from PIL import Image
 
 # Create your models here.
 
@@ -42,4 +43,38 @@ class Project(models.Model):
 
     class Meta:
         ordering = ["-date_posted"]
+
+
+class Rate(models.Model):
+    rating = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+        (6, '6'),
+        (7, '7'),
+        (8, '8'),
+        (9, '9'),
+        (10, '10'),
+    )
+
+    design = models.IntegerField(choices=rating, default=0, blank=True)
+    usability = models.IntegerField(choices=rating, blank=True)
+    content = models.IntegerField(choices=rating, blank=True)
+    score = models.FloatField(default=0, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='ratings', null=True)
+
+    def __str__(self):
+        return f'{self.project} Rating'
+
+    def save_rating(self):
+        self.save()
+
+    @classmethod
+    def get_ratings(cls, id):
+        ratings = Rating.objects.filter(post_id=id).all()
+        return ratings
+
 
