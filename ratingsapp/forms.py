@@ -10,9 +10,9 @@ class ProjectUploadForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('profile_photo','bio','website') 
+        fields = ('id','profile_picture','bio') 
 
 class RatingsForm(forms.ModelForm):
     class Meta:
-        model = Rates
+        model = Rate
         fields = ('design','usability','content')
