@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Profile, Project, Rate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import ProjectUploadForm, ProfileEditForm, RatingsForm
 
 # Create your views here.
 def home(request):
@@ -12,9 +13,9 @@ def home(request):
 
 def create_post(request):
     current_user = request.user
-    form = ProjectPostForm()
+    form = ProjectUploadForm()
     if request.method == 'POST':
-        form = ProjectPostForm(request.POST, request.FILES or None)
+        form = ProjectUploadForm(request.POST, request.FILES or None)
         if form.is_valid():
             add=form.save(commit=False)
             add.user = request.user
@@ -39,3 +40,37 @@ def search_results(request):
     else:
         message = "You haven't searched for any image category"
     return render(request, 'search.html', {'message': message})
+
+
+def detail(request,pk):
+   
+    project = Project.objects.get(id=pk)
+    ratings = Rate.objects.filter(user=request.user, project=project).first()
+    if request.method == 'POST':
+        form = RatingsForm(request.POST)
+        if form.is_valid():
+            rate = form.save(commit=False)
+            rate.user = request.user
+            rate.project = project
+            rate.save()
+            project_rating = Rate.objects.filter(project=project)
+            design = sum([design.design for design in project_rating])/len([design.design for design in project_rating])
+            usability = sum([use.usability for use in project_rating])/len([use.usability for use in project_rating])
+            content = sum([content.content for content in project_rating])/len([content.content for content in project_rating])
+
+            score =(design + usability + content) / 3
+            rate.score = round(score, 2)
+            print(rate.score)
+            rate.save()
+            
+            
+    else:
+        form = RatingsForm()
+    
+    params = {
+        'project': project,
+        'form':form,
+       
+            }
+
+    return render(request,"project_detail.html", params)
