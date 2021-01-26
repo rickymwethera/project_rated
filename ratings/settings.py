@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'django_registration',
     'crispy_forms',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
