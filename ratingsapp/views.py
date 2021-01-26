@@ -20,7 +20,7 @@ def create_post(request):
             add=form.save(commit=False)
             add.user = request.user
             add.save()
-            return redirect('index')
+            return redirect('home')
     
 
     context = {'form':form}
@@ -74,3 +74,18 @@ def detail(request,pk):
             }
 
     return render(request,"project_detail.html", params)
+
+
+def profile(request):
+    projects = Profile.objects.all()
+    user= request.user
+    params = {
+        'projects':projects,
+        'user_form':user_form,
+        'profile_form':profile_form,
+        'user':user,
+        
+       
+    }
+   
+    return render(request, 'profile.html', params)
