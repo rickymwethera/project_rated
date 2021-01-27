@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile, Project, Rate
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import ProjectUploadForm, ProfileEditForm, RatingsForm
 from rest_framework.response import Response
@@ -10,11 +13,12 @@ from .serializer import ProfileSerializer, ProjectSerializer
 from .permissions import IsAdminOrReadOnly
 from rest_framework import status
 # Create your views here.
+@login_required(login_url='/accounts/register/')
 def home(request):
     projects = Project.objects.all()
     return render(request, 'index.html',{"projects":projects})
 
-
+@login_required
 def create_post(request):
     current_user = request.user
     form = ProjectUploadForm()

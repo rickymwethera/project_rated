@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponseRedirect
 
 urlpatterns=[
     path('',views.home, name='home'),
@@ -14,6 +15,7 @@ urlpatterns=[
     path(r'^profile/(?P<username>\w+)', views.profile, name='profile'),
     url(r'^api/projects/$', views.ProjectList.as_view()),
     url(r'^api/profiles/$', views.ProfileList.as_view()),
+    
 ]
 
 if settings.DEBUG:
